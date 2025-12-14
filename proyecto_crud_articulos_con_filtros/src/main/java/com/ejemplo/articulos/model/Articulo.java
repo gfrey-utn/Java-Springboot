@@ -34,62 +34,48 @@ public class Articulo { // Declaración de la clase pública Articulo
      * Constructor vacío requerido por JPA.
      * Es obligatorio para que el framework pueda instanciar la entidad.
      */
-    public Articulo() { // Constructor por defecto sin parámetros
-        // No hace nada explícitamente, pero es necesario que exista
-    } // Fin del constructor vacío
+    public Articulo() {}
 
     /**
      * Constructor completo para crear instancias de Articulo fácilmente en el código.
      * No es usado por JPA directamente, pero es útil para nuestra lógica de negocio.
      */
-    public Articulo(Long id, String nombre, Double precio, String imagen) { // Constructor con todos los campos
-        this.id = id;           // Asignamos el parámetro id al atributo id de la clase
-        this.nombre = nombre;   // Asignamos el parámetro nombre al atributo nombre
-        this.precio = precio;   // Asignamos el parámetro precio al atributo precio
-        this.imagen = imagen;   // Asignamos el parámetro imagen al atributo imagen
-    } // Fin del constructor con parámetros
+    public Articulo(Long id, String nombre, Double precio, String imagen) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.imagen = imagen;
+    }
 
-    // =========================
-    // Getters y Setters
-    // =========================
+    public Long getId() {
+        return id;
+    }
 
-    // Getter del campo id
-    public Long getId() { // Devuelve el valor actual de id
-        return id; // Retorna el valor almacenado en el atributo id
-    } // Fin del getter de id
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    // Setter del campo id
-    public void setId(Long id) { // Recibe un nuevo valor para el atributo id
-        this.id = id; // Asigna el valor recibido al atributo id
-    } // Fin del setter de id
+    public String getNombre() {
+        return nombre;
+    }
 
-    // Getter del campo nombre
-    public String getNombre() { // Devuelve el valor actual del atributo nombre
-        return nombre; // Retorna el valor almacenado en nombre
-    } // Fin del getter de nombre
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    // Setter del campo nombre
-    public void setNombre(String nombre) { // Recibe un nuevo valor para el atributo nombre
-        this.nombre = nombre; // Asigna el valor recibido al atributo nombre
-    } // Fin del setter de nombre
+    public Double getPrecio() {
+        return precio;
+    }
 
-    // Getter del campo precio
-    public Double getPrecio() { // Devuelve el valor actual del atributo precio
-        return precio; // Retorna el valor almacenado en precio
-    } // Fin del getter de precio
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
 
-    // Setter del campo precio
-    public void setPrecio(Double precio) { // Recibe un nuevo valor para el atributo precio
-        this.precio = precio; // Asigna el valor recibido al atributo precio
-    } // Fin del setter de precio
+    public String getImagen() {
+        return imagen;
+    }
 
-    // Getter del campo imagen
-    public String getImagen() { // Devuelve el valor actual del atributo imagen
-        return imagen; // Retorna la URL o ruta de la imagen del artículo
-    } // Fin del getter de imagen
-
-    // Setter del campo imagen
-    public void setImagen(String imagen) { // Recibe un nuevo valor para el atributo imagen
-        this.imagen = imagen; // Asigna el valor recibido al atributo imagen
-    } // Fin del setter de imagen
-} // Fin de la clase Articulo
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+}

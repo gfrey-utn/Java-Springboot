@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 // Importamos anotaciones de Spring MVC para mapear rutas y parámetros
 import org.springframework.web.bind.annotation.*; // Importamos todas las anotaciones REST
 
-import java.util.List; // Usamos List para devolver colecciones de artículos
+import java.util.List; // Para poder devolver colecciones de artículos
 
 /**
  * Controlador REST que expone endpoints para gestionar Articulos.
@@ -18,7 +18,7 @@ import java.util.List; // Usamos List para devolver colecciones de artículos
 @CrossOrigin(origins = "*") // Permite solicitudes desde cualquier origen (útil para pruebas con frontends locales)
 @RestController // Indica que esta clase es un controlador REST (retorna JSON por defecto)
 @RequestMapping("/api/articulos") // Prefijo común para todas las rutas de este controlador
-public class ArticuloController { // Declaración de la clase pública del controlador
+public class ArticuloController {
 
     // Atributo que hace referencia al servicio de Articulo
     private final ArticuloService articuloService; // Dependencia hacia la capa de servicio
@@ -29,7 +29,7 @@ public class ArticuloController { // Declaración de la clase pública del contr
      */
     public ArticuloController(ArticuloService articuloService) { // Constructor con inyección de dependencias
         this.articuloService = articuloService; // Asignamos el servicio recibido al atributo interno
-    } // Fin del constructor
+    }
 
     // ======================
     // Endpoints CRUD básicos
@@ -42,7 +42,7 @@ public class ArticuloController { // Declaración de la clase pública del contr
     @GetMapping // Indica que este método responde a solicitudes HTTP GET en la ruta base
     public List<Articulo> listar() { // Devuelve una lista de Articulo en formato JSON
         return articuloService.listarArticulos(); // Delegamos al servicio la obtención de todos los artículos
-    } // Fin de listar
+    }
 
     /**
      * Endpoint GET para obtener un artículo por su ID.
@@ -53,7 +53,7 @@ public class ArticuloController { // Declaración de la clase pública del contr
         return articuloService.obtenerArticuloPorId(id) // Llamamos al servicio para buscar el artículo
                 .map(ResponseEntity::ok) // Si el artículo existe, devolvemos 200 OK con el cuerpo
                 .orElse(ResponseEntity.notFound().build()); // Si no existe, devolvemos 404 Not Found
-    } // Fin de obtenerPorId
+    }
 
     /**
      * Endpoint POST para crear un nuevo artículo.
@@ -62,7 +62,7 @@ public class ArticuloController { // Declaración de la clase pública del contr
     @PostMapping // Indica que este método responde a solicitudes HTTP POST en la ruta base
     public Articulo crear(@RequestBody Articulo articulo) { // @RequestBody indica que el JSON del cuerpo se mapea a un Articulo
         return articuloService.guardarArticulo(articulo); // Delegamos al servicio la lógica de guardado
-    } // Fin de crear
+    }
 
     /**
      * Endpoint PUT para actualizar un artículo existente por ID.
@@ -77,7 +77,7 @@ public class ArticuloController { // Declaración de la clase pública del contr
         // Si existe, actualizamos los datos usando el servicio
         Articulo actualizado = articuloService.actualizarArticulo(id, articulo); // Llamamos al servicio para actualizar
         return ResponseEntity.ok(actualizado); // Devolvemos 200 OK con el artículo actualizado
-    } // Fin de actualizar
+    }
 
     /**
      * Endpoint DELETE para eliminar un artículo por ID.
@@ -92,7 +92,7 @@ public class ArticuloController { // Declaración de la clase pública del contr
         // Si existe, lo eliminamos usando el servicio
         articuloService.eliminarArticulo(id); // Delegamos al servicio la lógica de borrado
         return ResponseEntity.noContent().build(); // Devolvemos 204 No Content indicando que se eliminó correctamente
-    } // Fin de eliminar
+    }
 
     // ======================
     // Endpoint de búsqueda con filtros
@@ -119,27 +119,27 @@ public class ArticuloController { // Declaración de la clase pública del contr
             return articuloService.buscarPorNombreYPrecioEntre(nombre, minPrecio, maxPrecio); // Llamamos al servicio con ambos filtros
         }
 
-        // Caso 2: solo nombre presente
-        if (nombre != null && minPrecio == null && maxPrecio == null) { // Solo hay filtro de nombre
+        // Caso 2: sólo nombre presente
+        if (nombre != null && minPrecio == null && maxPrecio == null) { // Sólo hay filtro de nombre
             return articuloService.buscarPorNombre(nombre); // Delegamos al servicio la búsqueda por nombre
         }
 
-        // Caso 3: solo rango de precios presente (sin nombre)
-        if (nombre == null && minPrecio != null && maxPrecio != null) { // Solo hay rango de precios
+        // Caso 3: sólo rango de precios presente (sin nombre)
+        if (nombre == null && minPrecio != null && maxPrecio != null) { // Sólo hay rango de precios
             return articuloService.buscarPorPrecioEntre(minPrecio, maxPrecio); // Llamamos al servicio con el rango
         }
 
-        // Caso 4: solo precio mínimo presente
-        if (minPrecio != null && maxPrecio == null && nombre == null) { // Solo hay filtro de precio mínimo
+        // Caso 4: sólo precio mínimo presente
+        if (minPrecio != null && maxPrecio == null && nombre == null) { // Sólo hay filtro de precio mínimo
             return articuloService.buscarPorPrecioMinimo(minPrecio); // Llamamos al servicio con el mínimo
         }
 
-        // Caso 5: solo precio máximo presente
-        if (maxPrecio != null && minPrecio == null && nombre == null) { // Solo hay filtro de precio máximo
+        // Caso 5: sólo precio máximo presente
+        if (maxPrecio != null && minPrecio == null && nombre == null) { // Sólo hay filtro de precio máximo
             return articuloService.buscarPorPrecioMaximo(maxPrecio); // Llamamos al servicio con el máximo
         }
 
         // Caso 6: si no se pasa ningún parámetro, devolvemos todos los artículos
         return articuloService.listarArticulos(); // Llamamos al servicio para listar todo
-    } // Fin del método buscar
-} // Fin de la clase ArticuloController
+    }
+}

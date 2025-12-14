@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 // Importamos la anotación Repository para marcar la interfaz como componente de acceso a datos
 import org.springframework.stereotype.Repository;
 
-import java.util.List; // Importamos la interfaz List para manejar colecciones de Articulo
+import java.util.List; // Para manejar colecciones de Articulo
 
 /**
  * Interfaz de repositorio para la entidad Articulo.
@@ -20,25 +20,9 @@ public interface ArticuloRepository extends JpaRepository<Articulo, Long> { // E
     // Métodos personalizados
     // ==============================
 
-    /**
-     * Busca artículos cuyo nombre contenga el texto indicado (búsqueda parcial),
-     * ignorando mayúsculas y minúsculas.
-     */
     List<Articulo> findByNombreContainingIgnoreCase(String nombre); // Devuelve artículos cuyo nombre contiene el texto
-
-    /**
-     * Busca artículos con un precio mayor o igual al valor indicado.
-     */
     List<Articulo> findByPrecioGreaterThanEqual(Double precioMinimo); // Devuelve artículos con precio >= precioMinimo
-
-    /**
-     * Busca artículos con un precio menor o igual al valor indicado.
-     */
     List<Articulo> findByPrecioLessThanEqual(Double precioMaximo); // Devuelve artículos con precio <= precioMaximo
-
-    /**
-     * Busca artículos con precio entre dos valores (inclusive).
-     */
     List<Articulo> findByPrecioBetween(Double precioMinimo, Double precioMaximo); // Devuelve artículos entre un rango
 
     /**
@@ -49,5 +33,5 @@ public interface ArticuloRepository extends JpaRepository<Articulo, Long> { // E
             String nombre,        // Texto que debe aparecer en el nombre
             Double precioMinimo,  // Límite inferior del precio
             Double precioMaximo   // Límite superior del precio
-    ); // Fin de la declaración del método
-} // Fin de la interfaz ArticuloRepository
+    );
+}
