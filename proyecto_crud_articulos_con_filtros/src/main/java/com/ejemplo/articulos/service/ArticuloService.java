@@ -1,33 +1,21 @@
-package com.ejemplo.articulos.service; // Paquete donde se define la capa de servicio
+package com.ejemplo.articulos.service;
 
-// Importamos la entidad Articulo que será manejada por el servicio
 import com.ejemplo.articulos.model.Articulo;
 
-import java.util.List;    // List se usa para devolver listas de artículos
-import java.util.Optional; // Optional se usa para evitar null al buscar por ID
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Interfaz que define el contrato del servicio de Articulo.
- * Aquí solo declaramos qué operaciones ofrece la capa de negocio.
- */
 public interface ArticuloService {
-
-    // Métodos CRUD básicos
 
     List<Articulo> listarArticulos();
 
-    /**
-     * Busca un artículo por su identificador único.
-     */
-    Optional<Articulo> obtenerArticuloPorId(Long id); // Devuelve un Optional con el artículo si existe
+    Optional<Articulo> obtenerArticuloPorId(Long id);
 
     Articulo guardarArticulo(Articulo articulo);
 
     Articulo actualizarArticulo(Long id, Articulo articulo);
 
     void eliminarArticulo(Long id);
-
-    // Métodos de búsqueda con filtros
 
     List<Articulo> buscarPorNombre(String nombre);
 

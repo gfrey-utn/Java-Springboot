@@ -1,90 +1,69 @@
-package com.ejemplo.articulos.service; // Paquete donde se implementa la lógica de negocio
+package com.ejemplo.articulos.service;
 
-// Importamos la entidad Articulo
 import com.ejemplo.articulos.model.Articulo;
-// Importamos el repositorio que accede a la base de datos
 import com.ejemplo.articulos.repository.ArticuloRepository;
 
-// Para poder marcar esta clase como servicio de Spring
 import org.springframework.stereotype.Service;
 
-import java.util.List;     // Para manejar colecciones de Articulo
-import java.util.Optional; // Para manejar posibles valores nulos
-
-/**
- * Implementación concreta de la interfaz ArticuloService.
- * Aquí se orquesta la lógica de negocio usando el repositorio.
- */
-@Service // Indica a Spring que esta clase es un servicio y debe ser gestionada como bean
+import java.util.List;
+import java.util.Optional;
+@Service
 public class ArticuloServiceImpl implements ArticuloService {
 
-    private final ArticuloRepository articuloRepository; // Dependencia hacia la capa de acceso a datos
+    private final ArticuloRepository articuloRepository;
 
-    /**
-     * Constructor que recibe el repositorio como dependencia.
-     * Spring inyectará automáticamente una instancia de ArticuloRepository.
-     */
-    public ArticuloServiceImpl(ArticuloRepository articuloRepository) { // Constructor con inyección de dependencias
-        this.articuloRepository = articuloRepository; // Asignamos el repositorio recibido al atributo interno
+    public ArticuloServiceImpl(ArticuloRepository articuloRepository) {
+        this.articuloRepository = articuloRepository;
     }
 
-    // ======================
-    // Implementación de métodos CRUD
-    // ======================
-
-    @Override // Indica que estamos sobrescribiendo un método de la interfaz
-    public List<Articulo> listarArticulos() { // Devuelve una lista con todos los artículos
-        return articuloRepository.findAll(); // Delegamos en el repositorio la búsqueda de todos los registros
+    @Override
+    public List<Articulo> listarArticulos() {
+        return articuloRepository.findAll();
     }
     
-    @Override // Implementación del método para obtener un artículo por ID
-    public Optional<Articulo> obtenerArticuloPorId(Long id) { // Recibe el ID del artículo a buscar
-        return articuloRepository.findById(id); // Devuelve un Optional con el artículo si existe
+    @Override
+    public Optional<Articulo> obtenerArticuloPorId(Long id) {
+        return articuloRepository.findById(id);
     }
 
-    @Override // Implementación del método para guardar un nuevo artículo
-    public Articulo guardarArticulo(Articulo articulo) { // Recibe el artículo a guardar
-        return articuloRepository.save(articulo); // Usa save para insertar el registro en la base de datos
+    @Override
+    public Articulo guardarArticulo(Articulo articulo) {
+        return articuloRepository.save(articulo);
     }
 
-    @Override // Implementación del método para actualizar un artículo existente
-    public Articulo actualizarArticulo(Long id, Articulo articulo) { // Recibe el ID y los nuevos datos del artículo
-        articulo.setId(id); // Aseguramos que el objeto tenga el ID correcto que queremos actualizar
-        return articuloRepository.save(articulo); // save actualiza el registro cuando el ID ya existe
+    @Override
+    public Articulo actualizarArticulo(Long id, Articulo articulo) {
+        articulo.setId(id);
+        return articuloRepository.save(articulo);
     }
 
-    @Override // Implementación del método para eliminar un artículo por ID
-    public void eliminarArticulo(Long id) { // Recibe el ID del artículo a eliminar
-        articuloRepository.deleteById(id); // Delegamos en el repositorio la eliminación del registro
+    @Override
+    public void eliminarArticulo(Long id) {
+        articuloRepository.deleteById(id);
     }
 
-    // ======================
-    // Implementación de métodos de búsqueda con filtros
-    // ======================
-
-    @Override // Implementación del filtro por nombre
-    public List<Articulo> buscarPorNombre(String nombre) { // Recibe texto a buscar dentro del nombre
-        return articuloRepository.findByNombreContainingIgnoreCase(nombre); // Llama al método del repositorio
+    @Override
+    public List<Articulo> buscarPorNombre(String nombre) {
+        return articuloRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
-    @Override // Implementación del filtro por precio mínimo
-    public List<Articulo> buscarPorPrecioMinimo(Double precioMinimo) { // Recibe el valor mínimo de precio
-        return articuloRepository.findByPrecioGreaterThanEqual(precioMinimo); // Devuelve artículos con precio >= mínimo
+    @Override
+    public List<Articulo> buscarPorPrecioMinimo(Double precioMinimo) {
+        return articuloRepository.findByPrecioGreaterThanEqual(precioMinimo);
     }
 
-    @Override // Implementación del filtro por precio máximo
-    public List<Articulo> buscarPorPrecioMaximo(Double precioMaximo) { // Recibe el valor máximo de precio
-        return articuloRepository.findByPrecioLessThanEqual(precioMaximo); // Devuelve artículos con precio <= máximo
+    @Override
+    public List<Articulo> buscarPorPrecioMaximo(Double precioMaximo) {
+        return articuloRepository.findByPrecioLessThanEqual(precioMaximo);
     }
 
-    @Override // Implementación del filtro por rango de precios
-    public List<Articulo> buscarPorPrecioEntre(Double precioMinimo, Double precioMaximo) { // Recibe límites del rango
-        return articuloRepository.findByPrecioBetween(precioMinimo, precioMaximo); // Devuelve artículos dentro del rango
+    @Override
+    public List<Articulo> buscarPorPrecioEntre(Double precioMinimo, Double precioMaximo) {
+        return articuloRepository.findByPrecioBetween(precioMinimo, precioMaximo);
     }
 
-    @Override // Implementación del filtro combinado por nombre y rango de precio
+    @Override
     public List<Articulo> buscarPorNombreYPrecioEntre(String nombre, Double precioMinimo, Double precioMaximo) {
-        // Llama al método del repositorio que combina el filtro de nombre parcial y el rango de precios
         return articuloRepository.findByNombreContainingIgnoreCaseAndPrecioBetween(nombre, precioMinimo, precioMaximo);
     }
 }

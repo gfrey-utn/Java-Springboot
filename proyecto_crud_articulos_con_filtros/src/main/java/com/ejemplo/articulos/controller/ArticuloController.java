@@ -1,145 +1,85 @@
-package com.ejemplo.articulos.controller; // Paquete donde se define el controlador REST
+package com.ejemplo.articulos.controller;
 
-// Importamos la entidad Articulo para usarla como tipo de dato en las respuestas
 import com.ejemplo.articulos.model.Articulo;
-// Importamos la interfaz de servicio que contiene la lógica de negocio
 import com.ejemplo.articulos.service.ArticuloService;
-// Importamos ResponseEntity para construir respuestas HTTP más expresivas
 import org.springframework.http.ResponseEntity;
-// Importamos anotaciones de Spring MVC para mapear rutas y parámetros
-import org.springframework.web.bind.annotation.*; // Importamos todas las anotaciones REST
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List; // Para poder devolver colecciones de artículos
+import java.util.List;
 
-/**
- * Controlador REST que expone endpoints para gestionar Articulos.
- * Recibe las solicitudes HTTP y delega la lógica en la capa de servicio.
- */
-@CrossOrigin(origins = "*") // Permite solicitudes desde cualquier origen (útil para pruebas con frontends locales)
-@RestController // Indica que esta clase es un controlador REST (retorna JSON por defecto)
-@RequestMapping("/api/articulos") // Prefijo común para todas las rutas de este controlador
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("/api/articulos")
 public class ArticuloController {
 
-    // Atributo que hace referencia al servicio de Articulo
-    private final ArticuloService articuloService; // Dependencia hacia la capa de servicio
+    private final ArticuloService articuloService;
 
-    /**
-     * Constructor que recibe e inyecta la implementación de ArticuloService.
-     * Spring se encarga de proporcionar la instancia concreta.
-     */
-    public ArticuloController(ArticuloService articuloService) { // Constructor con inyección de dependencias
-        this.articuloService = articuloService; // Asignamos el servicio recibido al atributo interno
+    public ArticuloController(ArticuloService articuloService) {
+        this.articuloService = articuloService;
     }
 
-    // ======================
-    // Endpoints CRUD básicos
-    // ======================
-
-    /**
-     * Endpoint GET para listar todos los artículos.
-     * URL: GET /api/articulos
-     */
-    @GetMapping // Indica que este método responde a solicitudes HTTP GET en la ruta base
-    public List<Articulo> listar() { // Devuelve una lista de Articulo en formato JSON
-        return articuloService.listarArticulos(); // Delegamos al servicio la obtención de todos los artículos
+    @GetMapping
+    public List<Articulo> listar() {
+        return articuloService.listarArticulos();
     }
 
-    /**
-     * Endpoint GET para obtener un artículo por su ID.
-     * URL: GET /api/articulos/{id}
-     */
-    @GetMapping("/{id}") // Indica que la ruta incluye un parámetro de path llamado id
-    public ResponseEntity<Articulo> obtenerPorId(@PathVariable Long id) { // @PathVariable vincula el id de la URL con el parámetro
-        return articuloService.obtenerArticuloPorId(id) // Llamamos al servicio para buscar el artículo
-                .map(ResponseEntity::ok) // Si el artículo existe, devolvemos 200 OK con el cuerpo
-                .orElse(ResponseEntity.notFound().build()); // Si no existe, devolvemos 404 Not Found
+    @GetMapping("/{id}")
+    public ResponseEntity<Articulo> obtenerPorId(@PathVariable Long id) {
+        return articuloService.obtenerArticuloPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Endpoint POST para crear un nuevo artículo.
-     * URL: POST /api/articulos
-     */
-    @PostMapping // Indica que este método responde a solicitudes HTTP POST en la ruta base
-    public Articulo crear(@RequestBody Articulo articulo) { // @RequestBody indica que el JSON del cuerpo se mapea a un Articulo
-        return articuloService.guardarArticulo(articulo); // Delegamos al servicio la lógica de guardado
+    @PostMapping
+    public Articulo crear(@RequestBody Articulo articulo) {
+        return articuloService.guardarArticulo(articulo);
     }
 
-    /**
-     * Endpoint PUT para actualizar un artículo existente por ID.
-     * URL: PUT /api/articulos/{id}
-     */
-    @PutMapping("/{id}") // Ruta que incluye el ID del artículo a actualizar
+    @PutMapping("/{id}")
     public ResponseEntity<Articulo> actualizar(@PathVariable Long id, @RequestBody Articulo articulo) {
-        // Primero verificamos si el artículo con ese ID existe
-        if (articuloService.obtenerArticuloPorId(id).isEmpty()) { // Si no se encuentra, devolvemos 404
-            return ResponseEntity.notFound().build(); // Construimos la respuesta 404 Not Found
+        if (articuloService.obtenerArticuloPorId(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        // Si existe, actualizamos los datos usando el servicio
-        Articulo actualizado = articuloService.actualizarArticulo(id, articulo); // Llamamos al servicio para actualizar
-        return ResponseEntity.ok(actualizado); // Devolvemos 200 OK con el artículo actualizado
+        Articulo actualizado = articuloService.actualizarArticulo(id, articulo);
+        return ResponseEntity.ok(actualizado);
     }
 
-    /**
-     * Endpoint DELETE para eliminar un artículo por ID.
-     * URL: DELETE /api/articulos/{id}
-     */
-    @DeleteMapping("/{id}") // Ruta que incluye el ID del artículo a eliminar
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) { // Usamos ResponseEntity<Void> porque no devolvemos cuerpo
-        // Verificamos si el artículo existe antes de eliminarlo
-        if (articuloService.obtenerArticuloPorId(id).isEmpty()) { // Si no lo encontramos, devolvemos 404
-            return ResponseEntity.notFound().build(); // Respuesta 404 Not Found
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        if (articuloService.obtenerArticuloPorId(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        // Si existe, lo eliminamos usando el servicio
-        articuloService.eliminarArticulo(id); // Delegamos al servicio la lógica de borrado
-        return ResponseEntity.noContent().build(); // Devolvemos 204 No Content indicando que se eliminó correctamente
+        articuloService.eliminarArticulo(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // ======================
-    // Endpoint de búsqueda con filtros
-    // ======================
-
-    /**
-     * Endpoint GET para buscar artículos aplicando filtros opcionales.
-     * URL base: GET /api/articulos/buscar
-     *
-     * Ejemplos de uso:
-     * - /api/articulos/buscar?nombre=mouse
-     * - /api/articulos/buscar?minPrecio=1000&maxPrecio=5000
-     * - /api/articulos/buscar?nombre=monitor&minPrecio=20000&maxPrecio=80000
-     */
-    @GetMapping("/buscar") // Ruta específica para la búsqueda con filtros
+    @GetMapping("/buscar")
     public List<Articulo> buscar(
-            @RequestParam(required = false) String nombre,   // Parámetro de consulta opcional para filtrar por nombre
-            @RequestParam(required = false) Double minPrecio, // Parámetro opcional para precio mínimo
-            @RequestParam(required = false) Double maxPrecio  // Parámetro opcional para precio máximo
-    ) { // Inicio del método buscar
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) Double minPrecio, 
+            @RequestParam(required = false) Double maxPrecio
+    ) {
 
-        // Caso 1: nombre + rango de precios (los tres parámetros presentes)
-        if (nombre != null && minPrecio != null && maxPrecio != null) { // Verificamos que los tres filtros tengan valor
-            return articuloService.buscarPorNombreYPrecioEntre(nombre, minPrecio, maxPrecio); // Llamamos al servicio con ambos filtros
+        if (nombre != null && minPrecio != null && maxPrecio != null) {
+            return articuloService.buscarPorNombreYPrecioEntre(nombre, minPrecio, maxPrecio);
         }
 
-        // Caso 2: sólo nombre presente
-        if (nombre != null && minPrecio == null && maxPrecio == null) { // Sólo hay filtro de nombre
-            return articuloService.buscarPorNombre(nombre); // Delegamos al servicio la búsqueda por nombre
+        if (nombre != null && minPrecio == null && maxPrecio == null) {
+            return articuloService.buscarPorNombre(nombre);
         }
 
-        // Caso 3: sólo rango de precios presente (sin nombre)
-        if (nombre == null && minPrecio != null && maxPrecio != null) { // Sólo hay rango de precios
-            return articuloService.buscarPorPrecioEntre(minPrecio, maxPrecio); // Llamamos al servicio con el rango
+        if (nombre == null && minPrecio != null && maxPrecio != null) {
+            return articuloService.buscarPorPrecioEntre(minPrecio, maxPrecio);
         }
 
-        // Caso 4: sólo precio mínimo presente
-        if (minPrecio != null && maxPrecio == null && nombre == null) { // Sólo hay filtro de precio mínimo
-            return articuloService.buscarPorPrecioMinimo(minPrecio); // Llamamos al servicio con el mínimo
+        if (minPrecio != null && maxPrecio == null && nombre == null) {
+            return articuloService.buscarPorPrecioMinimo(minPrecio);
         }
 
-        // Caso 5: sólo precio máximo presente
-        if (maxPrecio != null && minPrecio == null && nombre == null) { // Sólo hay filtro de precio máximo
-            return articuloService.buscarPorPrecioMaximo(maxPrecio); // Llamamos al servicio con el máximo
+        if (maxPrecio != null && minPrecio == null && nombre == null) {
+            return articuloService.buscarPorPrecioMaximo(maxPrecio);
         }
 
-        // Caso 6: si no se pasa ningún parámetro, devolvemos todos los artículos
-        return articuloService.listarArticulos(); // Llamamos al servicio para listar todo
+        return articuloService.listarArticulos();
     }
 }

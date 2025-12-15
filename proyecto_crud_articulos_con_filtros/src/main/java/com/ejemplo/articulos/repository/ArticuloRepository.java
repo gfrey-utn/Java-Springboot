@@ -1,37 +1,24 @@
-package com.ejemplo.articulos.repository; // Paquete donde se define el repositorio de Articulo
+package com.ejemplo.articulos.repository;
 
-// Importamos la clase Articulo que será gestionada por este repositorio
 import com.ejemplo.articulos.model.Articulo;
-// Importamos JpaRepository, interfaz de Spring Data que provee operaciones CRUD genéricas
+
 import org.springframework.data.jpa.repository.JpaRepository;
-// Importamos la anotación Repository para marcar la interfaz como componente de acceso a datos
+
 import org.springframework.stereotype.Repository;
 
-import java.util.List; // Para manejar colecciones de Articulo
+import java.util.List;
 
-/**
- * Interfaz de repositorio para la entidad Articulo.
- * Extiende JpaRepository para obtener métodos CRUD listos para usar.
- */
-@Repository // Indica que esta interfaz es un componente de acceso a datos (DAO/Repository)
-public interface ArticuloRepository extends JpaRepository<Articulo, Long> { // Especifica la entidad y el tipo de su ID
+@Repository
+public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
 
-    // ==============================
-    // Métodos personalizados
-    // ==============================
+    List<Articulo> findByNombreContainingIgnoreCase(String nombre);
+    List<Articulo> findByPrecioGreaterThanEqual(Double precioMinimo);
+    List<Articulo> findByPrecioLessThanEqual(Double precioMaximo);
+    List<Articulo> findByPrecioBetween(Double precioMinimo, Double precioMaximo);
 
-    List<Articulo> findByNombreContainingIgnoreCase(String nombre); // Devuelve artículos cuyo nombre contiene el texto
-    List<Articulo> findByPrecioGreaterThanEqual(Double precioMinimo); // Devuelve artículos con precio >= precioMinimo
-    List<Articulo> findByPrecioLessThanEqual(Double precioMaximo); // Devuelve artículos con precio <= precioMaximo
-    List<Articulo> findByPrecioBetween(Double precioMinimo, Double precioMaximo); // Devuelve artículos entre un rango
-
-    /**
-     * Busca artículos filtrando simultáneamente por texto en el nombre
-     * y por un rango de precios.
-     */
-    List<Articulo> findByNombreContainingIgnoreCaseAndPrecioBetween( // Combina filtro por nombre y rango de precio
-            String nombre,        // Texto que debe aparecer en el nombre
-            Double precioMinimo,  // Límite inferior del precio
-            Double precioMaximo   // Límite superior del precio
+    List<Articulo> findByNombreContainingIgnoreCaseAndPrecioBetween(
+            String nombre,
+            Double precioMinimo,
+            Double precioMaximo
     );
 }
